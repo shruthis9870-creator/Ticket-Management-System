@@ -24,7 +24,11 @@ A beginner-friendly train reservation project built with React, Vite, and Supaba
    VITE_SUPABASE_ANON_KEY=your-supabase-anon-or-publishable-key
    ```
 
-5. In the Supabase dashboard, open **SQL Editor**, paste the contents of `supabase-setup.sql`, and run it once.
+5. Set up the Supabase tables and example trains:
+
+   - For a new database, run `supabase-setup.sql` once. It creates the tables and adds two example trains.
+   - If your tables already exist, run `supabase-seed-trains.sql` instead. It adds 56 example trains across 14 two-way routes and can be run again without adding duplicate demo train numbers.
+
 6. Start the website:
 
    ```sh
@@ -42,12 +46,15 @@ A beginner-friendly train reservation project built with React, Vite, and Supaba
 
 The SQL setup adds example train records so the search has results to display.
 
+You can search routes between Bengaluru, Chennai, Hyderabad, Mumbai, Pune, Delhi, Jaipur, Lucknow, Varanasi, Kolkata, Bhubaneswar, Kochi, Goa, Ahmedabad, and Bhopal. These schedules and train numbers are fictional sample data, not live railway information.
+
 ## Project Structure
 
 - `src/pages/` contains the home, search results, booking, and reservations pages.
 - `src/components/` contains shared navigation, footer, and train-card components.
 - `src/services/supabase.js` creates the Supabase client.
 - `supabase-setup.sql` creates the two tables and example data.
+- `supabase-seed-trains.sql` adds sample train rows to existing tables.
 
 ## Useful Commands
 
