@@ -29,12 +29,22 @@ function SearchResults() {
             setLoading(true);
             setError("");
 
-            const { data, error } = await supabase
+            let query = supabase
                 .from("trains")
-                .select("*")
-                .ilike("source", `%${searchData.from}%`)
-                .ilike("destination", `%${searchData.to}%`)
-                .order("departure_time");
+                .select("*");
+
+            if (searchData.trainNumber) {
+                query = query.ilike(
+                    "train_number",
+                    `%${searchData.trainNumber}%`
+                );
+            } else {
+                query = query
+                    .ilike("source", `%${searchData.from}%`)
+                    .ilike("destination", `%${searchData.to}%`);
+            }
+
+            const { data, error } = await query.order("departure_time");
 
             if (error) {
 
@@ -87,15 +97,24 @@ function SearchResults() {
                     </span>
 
                     <h1>
-                        {searchData.from}
-                        <span> → </span>
-                        {searchData.to}
+                        {searchData.trainNumber ? (
+                            <>
+                                Train No. <span>{searchData.trainNumber}</span>
+                            </>
+                        ) : (
+                            <>
+                                {searchData.from}
+                                <span> → </span>
+                                {searchData.to}
+                            </>
+                        )}
                     </h1>
 
                     <p>
                         {searchData.travelDate}
                         {" • "}
                         {searchData.passengers} passenger(s)
+                        {" • Daily schedule"}
                     </p>
 
                 </div>

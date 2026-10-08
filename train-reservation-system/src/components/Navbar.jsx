@@ -20,6 +20,10 @@ function Navbar() {
                         My Reservations
                     </Link>
 
+                    <Link to="/admin">
+                        Admin
+                    </Link>
+
                 </div>
 
             </div>

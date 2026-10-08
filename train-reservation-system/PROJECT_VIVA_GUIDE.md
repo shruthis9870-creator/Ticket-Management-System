@@ -372,13 +372,13 @@ This guide is based on the current project files. Answers describe what the proj
 **Answer:** It stores the reservation creation time with timezone information and automatically uses the current database timestamp when the insert omits that column.
 
 ### Q120. How does the train search query work?
-**Answer:** SearchResults selects rows from `trains`, uses `.ilike()` on source and destination with `%` wildcards, and orders by `departure_time`.
+**Answer:** SearchResults selects rows from `trains`. If a train number is entered, it uses `.ilike()` with `%` wildcards on `train_number`; otherwise it applies `.ilike()` to source and destination. Results are ordered by `departure_time`.
 
 ### Q121. What does `ilike` mean?
 **Answer:** It performs a case-insensitive SQL `LIKE` comparison. The surrounding percent signs make the entered text match anywhere in the column, not only as an exact full string.
 
 ### Q122. Is travel date part of the train search query?
-**Answer:** No. The date is shown on the results page and saved to a new reservation, but the current `trains` query only filters source and destination. The train table has no date-specific schedule column.
+**Answer:** No. The date is shown on the results page and saved to a new reservation, but does not filter the train query. Every stored train row is treated as a daily service; the app does not validate actual service days.
 
 ### Q123. Is passenger count part of the train search query?
 **Answer:** No. It is displayed in the results heading and passed to Booking as the initial seat count. The query does not filter trains by passenger availability.
@@ -428,7 +428,7 @@ This guide is based on the current project files. Answers describe what the proj
 ## 7. Screen-by-Screen Questions
 
 ### Q138. What happens when the Home search form is submitted?
-**Answer:** The handler prevents a page reload, checks that source, destination, and date are supplied, blocks the same source and destination ignoring case, then navigates to `/search` with the four search values in router state.
+**Answer:** The handler prevents a page reload and requires a travel date. It accepts either a train number or both stations, blocks identical source/destination values for route searches, then navigates to `/search` with the search values in router state.
 
 ### Q139. What happens while search results load?
 **Answer:** The page displays a loading message, queries Supabase, then displays either an error, an empty state, or a count and list of train cards.
@@ -569,7 +569,7 @@ This guide is based on the current project files. Answers describe what the proj
 ## 12. Suggested Live Demonstration Checklist
 
 1. Start in the project folder and run `npm run dev`.
-2. Search for a route present in the Supabase `trains` table, for example Bengaluru to Chennai.
+2. Search for a route in the Supabase `trains` table, such as Bengaluru to Chennai, and optionally demonstrate searching by train number.
 3. Point out the loading, result count, route, class, times, seats, fare, and booking button.
 4. Open a train and explain that router state passes the selected train and journey data to Booking.
 5. Enter a test name and email, choose seats, and explain the displayed total calculation.
@@ -583,8 +583,8 @@ This guide is based on the current project files. Answers describe what the proj
 - React mounts into `#root` from `index.html`.
 - `main.jsx` imports `index.css`; `App.css` is not currently imported.
 - `App.jsx` owns the four React Router routes and shared Navbar/Footer.
-- Home validates fields and passes search values with router navigation state.
-- SearchResults uses `useEffect`, Supabase `.select()`, `.ilike()`, and `.order()`.
+- Home validates fields and passes route/date/passenger or train-number search values with router navigation state.
+- SearchResults uses `useEffect`, Supabase `.select()`, `.ilike()`, and `.order()`; it searches by number when supplied, otherwise by route.
 - TrainCard passes the selected train to Booking through router state.
 - Booking calculates `price * seats` and inserts a reservation.
 - MyReservations selects by exact email, includes related train fields, and updates status to `Cancelled`.

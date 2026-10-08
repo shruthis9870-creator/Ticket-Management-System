@@ -27,7 +27,7 @@ A beginner-friendly train reservation project built with React, Vite, and Supaba
 5. Set up the Supabase tables and example trains:
 
    - For a new database, run `supabase-setup.sql` once. It creates the tables and adds two example trains.
-   - If your tables already exist, run `supabase-seed-trains.sql` instead. It adds 56 example trains across 14 two-way routes and can be run again without adding duplicate demo train numbers.
+   - If your tables already exist, run `supabase-admin-policy.sql` to allow the demo Admin page to insert trains. Run `supabase-seed-trains.sql` if you also want 56 example trains across 14 two-way routes.
 
 6. Start the website:
 
@@ -43,6 +43,7 @@ A beginner-friendly train reservation project built with React, Vite, and Supaba
 2. Select **Book Now**, enter a name and email, and confirm the booking.
 3. Open **My Reservations** and search using that email.
 4. Cancel the reservation to see its status change.
+5. Open **Admin** in the navigation to view train/reservation data and add a train.
 
 The SQL setup adds example train records so the search has results to display.
 
@@ -54,6 +55,7 @@ You can search routes between Bengaluru, Chennai, Hyderabad, Mumbai, Pune, Delhi
 - `src/components/` contains shared navigation, footer, and train-card components.
 - `src/services/supabase.js` creates the Supabase client.
 - `supabase-setup.sql` creates the two tables and example data.
+- `supabase-admin-policy.sql` adds the train insert policy to an existing demo database.
 - `supabase-seed-trains.sql` adds sample train rows to existing tables.
 
 ## Useful Commands
@@ -66,9 +68,9 @@ npm run build
 
 ## Beginner Project Notes
 
-- Train search currently matches source and destination. The selected date is saved with the reservation; it is not used to filter train schedules.
+- Train search matches either source/destination or an optional train number. All stored train rows are treated as daily services; the selected date is saved with the reservation but does not filter schedules.
 - The example app does not update the train's seat count after a booking or cancellation. Availability is for demonstration only, so concurrent bookings could exceed the displayed number of seats.
-- The SQL policies are intentionally open to the Supabase `anon` role to keep this classroom demo simple. Anyone with the app can read and change demo reservations. Use fake data only; do not use these policies or real personal data for a public service.
+- Train read/insert policies allow the Supabase `anon` and `authenticated` roles, while the demo reservation policies allow `anon` access. The Admin route has no authentication, so anyone can open it and add trains. Use fake data only; do not use these demo policies or real personal data for a public service.
 - Keep your `.env` file private. It is ignored by Git. The browser app uses a public anon/publishable key, so database access must be controlled with Supabase policies.
 
 Authentication, payment processing, and live seat inventory are outside this beginner project's scope.

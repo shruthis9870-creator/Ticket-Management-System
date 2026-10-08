@@ -7,6 +7,7 @@ function Home() {
 
     const [from, setFrom] = useState("");
     const [to, setTo] = useState("");
+    const [trainNumber, setTrainNumber] = useState("");
     const [travelDate, setTravelDate] = useState("");
     const [passengers, setPassengers] = useState(1);
 
@@ -14,12 +15,14 @@ function Home() {
 
         event.preventDefault();
 
-        if (!from || !to || !travelDate) {
-            alert("Please fill all the fields.");
+        const hasTrainNumber = trainNumber.trim() !== "";
+
+        if ((!hasTrainNumber && (!from || !to)) || !travelDate) {
+            alert("Enter a train number or both stations, and choose a travel date.");
             return;
         }
 
-        if (from.toLowerCase() === to.toLowerCase()) {
+        if (!hasTrainNumber && from.toLowerCase() === to.toLowerCase()) {
             alert("From and To stations cannot be the same.");
             return;
         }
@@ -28,6 +31,7 @@ function Home() {
             state: {
                 from,
                 to,
+                trainNumber: trainNumber.trim(),
                 travelDate,
                 passengers
             }
@@ -66,9 +70,9 @@ function Home() {
                     <div className="search-title">
                         <h2>Find your train</h2>
 
-                        <p>
-                            Enter your journey details
-                        </p>
+                            <p>
+                                Enter route or train number. Schedules are available daily.
+                            </p>
                     </div>
 
 
@@ -156,6 +160,23 @@ function Home() {
                                 </select>
 
                             </div>
+
+                        </div>
+
+                        <div className="input-group train-number-search">
+
+                            <label>
+                                Train Number (optional)
+                            </label>
+
+                            <input
+                                type="text"
+                                placeholder="e.g. 990019"
+                                value={trainNumber}
+                                onChange={(e) =>
+                                    setTrainNumber(e.target.value)
+                                }
+                            />
 
                         </div>
 

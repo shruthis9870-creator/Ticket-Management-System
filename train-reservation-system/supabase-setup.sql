@@ -25,15 +25,19 @@ create table public.reservations (
     created_at timestamptz not null default now()
 );
 
-grant select on public.trains to anon;
+grant select, insert on public.trains to anon, authenticated;
 grant select, insert, update on public.reservations to anon;
 
 alter table public.trains enable row level security;
 alter table public.reservations enable row level security;
 
 create policy "Demo users can read trains"
-    on public.trains for select to anon
+    on public.trains for select to anon, authenticated
     using (true);
+
+create policy "Demo users can add trains"
+    on public.trains for insert to anon, authenticated
+    with check (true);
 
 create policy "Demo users can read reservations"
     on public.reservations for select to anon

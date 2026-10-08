@@ -11,6 +11,7 @@ import Home from "./pages/Home";
 import SearchResults from "./pages/SearchResults";
 import Booking from "./pages/Booking";
 import MyReservations from "./pages/MyReservations";
+import Admin from "./pages/admin";
 
 
 function App() {
@@ -43,6 +44,10 @@ function App() {
                     <Route
                         path="/reservations"
                         element={<MyReservations />}
+                    />
+                    <Route
+                        path="/admin"
+                        element={<Admin />}
                     />
 
                 </Routes>
