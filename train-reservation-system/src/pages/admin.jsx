@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import { isSupabaseConfigured, supabase } from "../services/supabase";
 
 function Admin() {
+    const isConfigured = Boolean(isSupabaseConfigured && supabase);
     const [trains, setTrains] = useState([]);
     const [reservations, setReservations] = useState([]);
-    const [loading, setLoading] = useState(isSupabaseConfigured);
+    const [loading, setLoading] = useState(isConfigured);
     const [error, setError] = useState("");
 
     const [trainForm, setTrainForm] = useState({
@@ -22,7 +23,7 @@ function Admin() {
 
     // Load trains and reservations
     useEffect(() => {
-        if (!isSupabaseConfigured) {
+        if (!isConfigured || !supabase) {
             return;
         }
 
@@ -57,7 +58,7 @@ function Admin() {
         };
 
         loadData();
-    }, []);
+    }, [isConfigured]);
 
     // Input change
     const handleChange = (e) => {
@@ -73,7 +74,7 @@ function Admin() {
 
         setError("");
 
-        if (!isSupabaseConfigured) {
+        if (!isConfigured || !supabase) {
             setError("Supabase is not configured.");
             return;
         }
@@ -143,13 +144,13 @@ function Admin() {
                 </div>
             )}
 
-            {!isSupabaseConfigured && (
+            {!isConfigured && (
                 <div className="message">
-                    Supabase is not configured.
+                    Supabase is not configured. The app is running in demo mode.
                 </div>
             )}
 
-            {isSupabaseConfigured && (
+            {isConfigured && (
                 <>
                     {/* STATS */}
                     <div className="admin-stats">

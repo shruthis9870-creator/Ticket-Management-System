@@ -140,27 +140,49 @@ function isSupabaseConfigured() {
 /**
  * Searches for trains. Tries Supabase first; falls back gracefully to seed data.
  */
-export async function searchTrains(from, to) {
+export async function searchTrains(from = "", to = "", trainNumber = "") {
+    const cleanFrom = from.trim();
+    const cleanTo = to.trim();
+    const cleanTrainNumber = trainNumber.trim();
+
     if (isSupabaseConfigured()) {
         try {
-            const { data, error } = await supabase
+            let query = supabase
                 .from("trains")
-                .select("*")
-                .ilike("source", `%${from}%`)
-                .ilike("destination", `%${to}%`)
-                .order("departure_time");
+                .select("*");
 
-            if (!error && data && data.length > 0) {
+            if (cleanTrainNumber) {
+                query = query.ilike("train_number", `%${cleanTrainNumber}%`);
+            } else {
+                query = query
+                    .ilike("source", `%${cleanFrom}%`)
+                    .ilike("destination", `%${cleanTo}%`);
+            }
+
+            const { data, error } = await query.order("departure_time");
+
+            if (!error && data) {
                 return { trains: data, isDemo: false };
+            }
+
+            if (error) {
+                console.warn("Supabase train search failed:", error);
             }
         } catch (e) {
             console.warn("Supabase query failed, falling back to local data:", e);
         }
     }
 
+    if (cleanTrainNumber) {
+        const matched = SEED_TRAINS.filter((train) =>
+            train.train_number.includes(cleanTrainNumber)
+        );
+        return { trains: matched, isDemo: true };
+    }
+
     // Local fallback matching
-    const qFrom = from.trim().toLowerCase();
-    const qTo = to.trim().toLowerCase();
+    const qFrom = cleanFrom.toLowerCase();
+    const qTo = cleanTo.toLowerCase();
 
     const matched = SEED_TRAINS.filter(
         (t) =>
@@ -177,9 +199,9 @@ export async function searchTrains(from, to) {
         {
             id: 101,
             train_number: "22801",
-            train_name: `${from} - ${to} Superfast`,
-            source: from,
-            destination: to,
+            train_name: `${cleanFrom} - ${cleanTo} Superfast`,
+            source: cleanFrom,
+            destination: cleanTo,
             departure_time: "07:15",
             arrival_time: "13:30",
             duration: "6h 15m",
@@ -190,9 +212,9 @@ export async function searchTrains(from, to) {
         {
             id: 102,
             train_number: "12904",
-            train_name: `${from} Intercity Express`,
-            source: from,
-            destination: to,
+            train_name: `${cleanFrom} Intercity Express`,
+            source: cleanFrom,
+            destination: cleanTo,
             departure_time: "15:40",
             arrival_time: "21:50",
             duration: "6h 10m",

@@ -40,24 +40,30 @@ function Booking() {
             return;
         }
 
+        if (!train) {
+            alert("Please select a train before booking.");
+            return;
+        }
+
         setLoading(true);
 
         try {
+            const travelDate = bookingData?.travelDate || new Date().toISOString().split("T")[0];
             const ticket = await bookTicket({
                 passenger_name: name,
                 email: email,
                 train: train,
-                travel_date: bookingData.travelDate,
+                travel_date: travelDate,
                 seats: seats,
                 total_amount: totalAmount,
             });
 
-            // Automatically download ticket PDF to system
             try {
                 const filename = downloadTicketPDF(ticket);
                 setDownloadNotification(`Ticket saved to your system: ${filename}`);
             } catch (pdfErr) {
                 console.error("PDF generation error:", pdfErr);
+                setDownloadNotification("Ticket booked successfully. PDF download could not be generated in this browser.");
             }
 
             setConfirmedTicket(ticket);

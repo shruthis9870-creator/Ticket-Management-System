@@ -1,6 +1,9 @@
-import { Link } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 
 function Navbar() {
+    const location = useLocation();
+    const isJourneyPage = ["/search", "/booking"].includes(location.pathname);
+
     return (
         <nav className="navbar">
 
@@ -12,17 +15,23 @@ function Navbar() {
 
                 <div className="nav-links">
 
-                    <Link to="/">
+                    <NavLink
+                        to="/"
+                        end
+                        className={({ isActive }) =>
+                            isActive || isJourneyPage ? "active" : ""
+                        }
+                    >
                         Home
-                    </Link>
+                    </NavLink>
 
-                    <Link to="/reservations">
+                    <NavLink to="/reservations">
                         My Reservations
-                    </Link>
+                    </NavLink>
 
-                    <Link to="/admin">
+                    <NavLink to="/admin">
                         Admin
-                    </Link>
+                    </NavLink>
 
                 </div>
 

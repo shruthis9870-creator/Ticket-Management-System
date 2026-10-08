@@ -15,7 +15,7 @@ function MyReservations() {
 
     const searchReservations = useCallback(
         async (searchEmail) => {
-            const targetEmail = searchEmail || email;
+            const targetEmail = (searchEmail || "").trim();
             if (!targetEmail) {
                 setMessage("Please enter your email address to look up reservations.");
                 return;
@@ -40,16 +40,16 @@ function MyReservations() {
                 setLoading(false);
             }
         },
-        [email]
+        []
     );
 
     // Auto-search if email was passed from Booking page
     useEffect(() => {
-        if (location.state?.email) {
-            setEmail(location.state.email);
-            searchReservations(location.state.email);
+        const bookingEmail = location.state?.email;
+        if (bookingEmail) {
+            Promise.resolve().then(() => searchReservations(bookingEmail));
         }
-    }, [location.state, searchReservations]);
+    }, [location.state?.email, searchReservations]);
 
     const handleDownload = (reservation) => {
         try {
@@ -94,10 +94,10 @@ function MyReservations() {
                     placeholder="Enter your registered email (e.g. traveler@example.com)"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && searchReservations()}
+                    onKeyDown={(e) => e.key === "Enter" && searchReservations(email)}
                 />
 
-                <button onClick={() => searchReservations()}>
+                <button onClick={() => searchReservations(email)}>
                     {loading ? "Searching..." : "🔍 Search Reservations"}
                 </button>
             </div>

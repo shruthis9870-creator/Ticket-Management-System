@@ -18,14 +18,14 @@ function TrainCard({ train, searchData }) {
 
     return (
 
-        <div className="train-card">
+        <article className="train-card">
 
             <div className="train-top">
 
                 <div>
 
                     <span className="train-number">
-                        {train.train_number}
+                        Train {train.train_number}
                     </span>
 
                     <h2>
@@ -34,8 +34,8 @@ function TrainCard({ train, searchData }) {
 
                 </div>
 
-                <div className="class-badge">
-                    {train.train_class}
+                <div className="class-badge" title="Travel class">
+                    Class {train.train_class}
                 </div>
 
             </div>
@@ -45,6 +45,7 @@ function TrainCard({ train, searchData }) {
 
                 <div className="time-section">
 
+                    <span className="station-label">DEPARTS</span>
                     <strong>
                         {train.departure_time}
                     </strong>
@@ -56,19 +57,19 @@ function TrainCard({ train, searchData }) {
                 </div>
 
 
-                <div className="journey-line">
-
-                    <span>●</span>
-
-                    <div></div>
-
-                    <span>●</span>
-
+                <div className="journey-connector">
+                    <small>{train.duration}</small>
+                    <div className="journey-line">
+                        <span>●</span>
+                        <div></div>
+                        <span>●</span>
+                    </div>
                 </div>
 
 
                 <div className="time-section">
 
+                    <span className="station-label">ARRIVES</span>
                     <strong>
                         {train.arrival_time}
                     </strong>
@@ -83,20 +84,14 @@ function TrainCard({ train, searchData }) {
 
 
             <div className="train-info">
-
                 <div>
-                    <span>Duration</span>
-                    <strong>{train.duration}</strong>
-                </div>
-
-                <div>
-                    <span>Available</span>
+                    <span>Seats available</span>
                     <strong>{train.seats_available} seats</strong>
                 </div>
 
                 <div>
-                    <span>Fare</span>
-                    <strong>₹{train.price}</strong>
+                    <span>Fare per passenger</span>
+                    <strong>₹{Number(train.price).toLocaleString("en-IN")}</strong>
                 </div>
 
             </div>
@@ -109,7 +104,7 @@ function TrainCard({ train, searchData }) {
                 Book Now →
             </button>
 
-        </div>
+        </article>
 
     );
 }
