@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-import { supabase } from "../services/supabase";
+import { searchTrains } from "../services/ticketService";
 import TrainCard from "../components/TrainCard";
 
 function SearchResults() {
@@ -15,8 +15,6 @@ function SearchResults() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
-
-
     useEffect(() => {
 
         if (!searchData) {
@@ -29,35 +27,20 @@ function SearchResults() {
             setLoading(true);
             setError("");
 
-            let query = supabase
+            const { data, error } = await supabase
                 .from("trains")
-                .select("*");
-
-            if (searchData.trainNumber) {
-                query = query.ilike(
-                    "train_number",
-                    `%${searchData.trainNumber}%`
-                );
-            } else {
-                query = query
-                    .ilike("source", `%${searchData.from}%`)
-                    .ilike("destination", `%${searchData.to}%`);
-            }
-
-            const { data, error } = await query.order("departure_time");
+                .select("*")
+                .ilike("source", `%${searchData.from}%`)
+                .ilike("destination", `%${searchData.to}%`)
+                .order("departure_time");
 
             if (error) {
 
                 console.error(error);
 
                 setError(
-                    "Unable to load trains. Please check your Supabase connection."
+                    "Unable to load trains. Please check your connection or search criteria."
                 );
-
-            } else {
-
-                setTrains(data || []);
-
             }
 
             setLoading(false);
